@@ -1,0 +1,59 @@
+﻿@using School.App.Models
+@model ScheduleTableViewModel
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Class schedule:@Model.ClassName</h2>
+
+    @if (User.IsInRole("Teacher"))
+    {
+        <a asp-action="Create" asp-route-className="@Model.ClassName"
+           class="btn btn-primary">
+            Add an entry to the schedule
+        </a>
+    }
+</div>
+
+@{
+    var weekDays = new[] {
+        DayOfWeek.Monday,
+        DayOfWeek.Tuesday,
+        DayOfWeek.Wednesday,
+        DayOfWeek.Thursday,
+        DayOfWeek.Friday
+    };
+}
+
+<table class="table table-bordered text-center fixed-width-table">
+    <thead>
+        <tr>
+            <th>Time</th>
+            @foreach (DayOfWeek day in weekDays)
+            {
+                <th>@day</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var timeSlot in Model.TimeSlots)
+        {
+            <tr>
+                <td>@timeSlot.ToString(@"hh\:mm")</td>
+                @foreach (DayOfWeek day in weekDays)
+                {
+                    if (Model.Schedule.ContainsKey(timeSlot) && Model.Schedule[timeSlot].ContainsKey(day))
+                    {
+                        var cell = Model.Schedule[timeSlot][day];
+                        <td>
+                            <strong>@cell.SubjectName</strong><br />
+                            @cell.TeacherName<br />
+                        </td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                }
+            </tr>
+        }
+    </tbody>
+</table>

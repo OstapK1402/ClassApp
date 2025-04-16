@@ -1,0 +1,57 @@
+﻿@using School.BLL.DTO
+@model ClassSubjectDTO
+
+@{
+    ViewData["Title"] = "Edit Lesson";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-3">
+        <p>
+            <h4>Edit lesson</h4>
+        </p>
+        @if (TempData["Error"] != null)
+        {
+            <div class="col-md-12 alert alert-danger">
+                <span><b>Sorry!</b> - @TempData["Error"]</span>
+            </div>
+        }
+        <div class="row">
+            <div class="col-md-8 offset-2">
+                <form asp-action="Edit" method="Post" enctype="multipart/form-data">
+                    <input type="hidden" name="ClassId" value="@Model.ClassId"/>
+                    <input type="hidden" name="SubjectId" value="@Model.SubjectId"/>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Class.Name" class="control-label"></label>
+                        <input asp-for="Class.Name" class="form-control" readonly>
+                        <span asp-validation-for="Class.Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Subject.Name" class="control-label" ></label>
+                        <input asp-for="Subject.Name" class="form-control" readonly>
+                        <span asp-validation-for="Subject.Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="TeacherId" class="control-label"></label>
+                        <select asp-for="TeacherId" asp-items="Model.Teachers" class="form-control">
+                            <option selected="@Model.TeacherId"></option>
+                        </select>
+                        <span asp-validation-for="TeacherId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input class="btn btn-outline-success float-right" type="submit" value="Save" />
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Teacher"))
+                        {
+                            <a class="btn btn-outline-secondary" asp-controller="Lesson" asp-action="TeacherIndex">Cancel</a>
+                        }
+                        else if (User.IsInRole("Student"))
+                        {
+                            <a class="btn btn-outline-secondary" asp-controller="Lesson" asp-action="StudentIndex">Cancel</a>
+                        }
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

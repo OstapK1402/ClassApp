@@ -1,0 +1,62 @@
+﻿@using School.App.Models
+@model HomeworkDetailsViewModel
+
+@{
+    ViewData["Title"] = "Homework Details";
+}
+
+<div class="container mt-4">
+    <div class="card shadow p-4">
+        <h2 class="mb-4">@Model.Homework.Title</h2>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <p><strong>Subject:</strong> @Model.Homework.Subject.Name</p>
+                <p><strong>Class:</strong> @Model.Homework.Class.Name</p>
+                <p><strong>Create Date:</strong> @Model.Homework.CreatedAt.ToString("dd.MM.yyyy")</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Teacher:</strong> @Model.Homework.Teacher.FullName</p>
+                <p><strong>Due Date:</strong> @Model.Homework.DueDate.ToString("dd.MM.yyyy")</p>
+            </div>
+        </div>
+
+        <hr />
+
+        <h4 class="mb-2">Description</h4>
+        <p class="mb-4">@Model.Homework.Description</p>
+
+        <h4 class="mb-2">Submission</h4>
+
+        @if (Model.Submission != null)
+        {
+            <p><strong>Submitted At:</strong> @Model.Submission.SubmittedAt.ToString("dd.MM.yyyy HH:mm:ss")</p>
+            <a asp-controller="HomeworkSubmission" asp-action="Detail" asp-route-submissionId="@Model.Submission.Id" class="btn btn-primary mb-4">
+                <i class="bi bi-download"></i> Download Submission
+            </a>
+
+            @if (Model.Grade != null)
+            {
+                <div class="alert alert-light border p-3">
+                    <h5 class="mb-3 text-success">Оцінка та коментар вчителя</h5>
+                    <p><strong>Оцінка:</strong> <span class="badge bg-success fs-6">@Model.Grade.GradeValue</span></p>
+                    <p><strong>Коментар:</strong> @Model.Grade.Comment</p>
+                    <p><strong>Дата оцінювання:</strong> @Model.Grade.Date.ToShortDateString()</p>
+                </div>
+            }
+        }
+        else
+        {
+            <form asp-controller="HomeworkSubmission" asp-action="Submission" method="post" enctype="multipart/form-data" class="mt-3">
+                <input type="hidden" name="HomeworkId" value="@Model.Homework.Id" />
+                <div class="mb-3">
+                    <label for="file" class="form-label">Upload your submission:</label>
+                    <input type="file" name="file" class="form-control" required />
+                </div>
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-upload"></i> Submit Homework
+                </button>
+            </form>
+        }
+    </div>
+</div>

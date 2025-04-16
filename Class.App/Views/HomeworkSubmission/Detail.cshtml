@@ -1,0 +1,55 @@
+﻿@using School.BLL.DTO
+@model Tuple<HomeworkSubmissionDTO, GradeDTO>
+
+@{
+    ViewData["Title"] = "Homework Submission Review";
+    var submission = Model.Item1;
+    var grade = Model.Item2;
+}
+
+<h2>Homework Submission Review</h2>
+
+<div class="card p-3 mb-4">
+    <h4>Submission Details</h4>
+    <p><strong>Student:</strong> @submission.Student.FullName</p>
+    <p><strong>Submitted At:</strong> @submission.SubmittedAt.ToString("dd.MM.yyyy HH:mm")</p>
+
+    <p>
+        <strong>File:</strong>
+        @if (!string.IsNullOrEmpty(submission.FilePath))
+        {
+            <a asp-controller="HomeworkSubmission" asp-action="Download" asp-route-submissionId="@submission.Id" class="btn btn-sm btn-primary"> Download File </a>
+        }
+        else
+        {
+            <span class="text-danger">No file available</span>
+        }
+    </p>
+</div>
+
+<hr />
+
+<h4>Grade Submission</h4>
+
+<form asp-action="Create" asp-controller="Grade" method="post">
+    <input type="hidden" name="submissionId" value="@submission.Id" />
+    <input type="hidden" name="HomeworkSubmissionId" value="@submission.Id" />
+
+    <div class="mb-3">
+        <label for="GradeValue" class="form-label">Grade</label>
+        <input name="GradeValue" value="@grade.GradeValue" class="form-control" />
+        <span class="text-danger" data-valmsg-for="GradeValue"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="Comment" class="form-label">Comment</label>
+        <textarea name="Comment" class="form-control">@grade.Comment</textarea>
+        <span class="text-danger" data-valmsg-for="Comment"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Save Grade</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

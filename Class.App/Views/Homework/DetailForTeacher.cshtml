@@ -1,0 +1,77 @@
+﻿@using School.App.Models
+@model HomeworkSubmissionsViewModel
+
+@{
+    ViewData["Title"] = "Homework Submissions";
+}
+
+<h2>@Model.Homework.Title - @Model.Homework.Class.Name</h2>
+<p><strong>Subject:</strong> @Model.Homework.Subject.Name</p>
+<p><strong>Due Date:</strong> @Model.Homework.DueDate.ToShortDateString()</p>
+
+<table class="table table-bordered mt-4">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Student</th>
+            <th>Status</th>
+            <th>Submitted At</th>
+            <th>Grade</th> <!-- нова колонка -->
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < Model.Students.Count; i++)
+        {
+            var student = Model.Students[i];
+            <tr>
+                <td>@(i + 1)</td>
+                <td>@student.StudentFullName</td>
+                <td>
+                    @if (student.HasSubmitted)
+                    {
+                        <span class="text-success">Submitted</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger">Not Submitted</span>
+                    }
+                </td>
+                <td>
+                    @if (student.HasSubmitted)
+                    {
+                        @student.SubmittedAt?.ToString("g")
+                    }
+                    else
+                    {
+                        <i>—</i>
+                    }
+                </td>
+                <td>
+                    @if (student.GradeValue.HasValue)
+                    {
+                        <span class="badge bg-success">@student.GradeValue</span>
+                    }
+                    else if (student.HasSubmitted)
+                    {
+                        <span class="text-muted">Not graded</span>
+                    }
+                    else
+                    {
+                        <i>—</i>
+                    }
+                </td>
+                <td>
+                    @if (student.HasSubmitted)
+                    {
+                        <a asp-controller="HomeworkSubmission" asp-action="Detail" asp-route-submissionId="@student.SubmissionId" class="btn btn-sm btn-primary"> Add Grade </a>
+                    }
+                    else
+                    {
+                        <span class="text-muted">—</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

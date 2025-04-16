@@ -1,0 +1,54 @@
+﻿@using School.BLL.DTO 
+@model IEnumerable<ClassSubjectDTO>
+
+@{
+    ViewData["Title"] = "My Lessons";
+}
+
+<h2>My Lessons</h2>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        <span>@TempData["Error"]</span>
+    </div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>№</th>
+            <th>Class</th>
+            <th>Subject</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            int index = 1;
+            @foreach (var lesson in Model)
+            {
+                <tr>
+                    <td>@index</td>
+                    <td>@lesson.Class.Name</td>
+                    <td>@lesson.Subject.Name</td>
+                    <td>
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Teacher"))
+                        {
+                            <a asp-action="Edit" asp-route-classId="@lesson.ClassId" asp-route-subjectId="@lesson.SubjectId" class="btn btn-sm btn-primary">Edit</a>
+                        }
+                        <a asp-action="Detail" asp-route-classId="@lesson.ClassId" asp-route-subjectId="@lesson.SubjectId" class="btn btn-sm btn-info">View</a>
+                    </td>
+                </tr>
+                index++;
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4" class="text-center">No lessons found.</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,58 @@
+﻿@using School.App.Models
+@model LessonDetailsViewModel
+
+@{
+    ViewData["Title"] = "Lesson Details";
+}
+
+<h2>@Model.ClassSubject.Subject.Name - @Model.ClassSubject.Class.Name</h2>
+
+<p><strong>Teacher:</strong> @Model.ClassSubject.Teacher.FullName</p>
+
+<h3>Homework</h3>
+
+@if (Model.Homeworks.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Due Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var hw in Model.Homeworks)
+            {
+                <tr>
+                    <td>@hw.Title</td>
+                    <td>@hw.DueDate.ToShortDateString()</td>
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Teacher"))
+                    {
+                        <td>
+                            <a asp-controller="Homework" asp-action="DetailForTeacher" asp-route-homeworkId="@hw.Id" class="btn btn-sm btn-info">Detail</a>
+                            <a asp-controller="Homework" asp-action="Edit" asp-route-homeworkId="@hw.Id" class="btn btn-sm btn-warning">Edit</a>
+                            <a asp-controller="Homework" asp-action="Delete" asp-route-homeworkId="@hw.Id" onclick="return confirm('Are you sure?')" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+                    }
+                    else if (User.Identity.IsAuthenticated && User.IsInRole("Student"))
+                    {
+                        <td>
+                            <a asp-controller="Homework" asp-action="Detail" asp-route-homeworkId="@hw.Id" class="btn btn-sm btn-info">View</a>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No homework assigned yet.</p>
+}
+
+@if (User.Identity.IsAuthenticated && User.IsInRole("Teacher"))
+{
+    <a asp-controller="Homework" asp-action="Create" asp-route-classId="@Model.ClassSubject.ClassId" asp-route-subjectId="@Model.ClassSubject.SubjectId"
+       asp-route-teacherId="@Model.ClassSubject.TeacherId" class="btn btn-primary">Assign Homework</a>
+}

@@ -22,14 +22,14 @@ namespace School.App.Controllers
             return View("Index", allSubjects);
         }
 
-        [Authorize(Roles = UserRole.TEACHER)]
+        [Authorize(Roles = UserRole.ADMIN)]
         public ActionResult Create()
         {
             return View("Create");
         }
 
         [HttpPost]
-        [Authorize(Roles = UserRole.TEACHER)]
+        [Authorize(Roles = UserRole.ADMIN)]
         public async Task<ActionResult> Create(SubjectDTO subject, CancellationToken token)
         {
             if (!ModelState.IsValid)
@@ -45,7 +45,7 @@ namespace School.App.Controllers
             return RedirectToAction("Index", "Subject");
         }
 
-        [Authorize(Roles = UserRole.TEACHER)]
+        [Authorize(Roles = UserRole.ADMIN)]
         public async Task<IActionResult> Edit(int subjectId, CancellationToken token)
         {
             var subject = await _subjectService.GetById(subjectId, token);
@@ -59,7 +59,7 @@ namespace School.App.Controllers
             return View("Edit", subject);
         }
 
-        [Authorize(Roles = UserRole.TEACHER)]
+        [Authorize(Roles = UserRole.ADMIN)]
         [HttpPost]
         public async Task<IActionResult> Edit(int subjectId, SubjectDTO subjectEdit, CancellationToken token)
         {
@@ -86,7 +86,7 @@ namespace School.App.Controllers
         }
 
 
-        [Authorize(Roles = UserRole.TEACHER)]
+        [Authorize(Roles = UserRole.ADMIN)]
         public async Task<IActionResult> Delete(int subjectId, CancellationToken token)
         {
             var subject = await _subjectService.GetById(subjectId, token);

@@ -16,7 +16,7 @@ namespace School.BLL.DTO
         public int GradeValue { get; set; }
 
         [StringLength(500, ErrorMessage = "Коментар не повинен перевищувати 500 символів.")]
-        public string Comment { get; set; }
+        public string? Comment { get; set; }
 
         [Required(ErrorMessage = "Дата є обов'язковою.")]
         public DateTime Date { get; set; }

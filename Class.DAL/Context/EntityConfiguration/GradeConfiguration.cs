@@ -24,7 +24,8 @@ namespace School.DAL.Context.EntityConfiguration
                 .IsRequired();
 
             builder.Property(x => x.Comment)
-                .HasMaxLength(500);
+                .HasMaxLength(500)
+                .IsRequired(false);
 
             builder.Property(x => x.Date)
                 .IsRequired();

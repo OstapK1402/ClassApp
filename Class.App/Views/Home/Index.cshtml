@@ -3,6 +3,28 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    @if (TempData["Error"] != null)
+    {
+        <div class="col-md-12 alert alert-danger">
+            <span><b>Sorry!</b> - @TempData["Error"]</span>
+        </div>
+    }
+    else if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    <h1 class="display-4">Ласкаво просимо до Class.App!</h1>
+
+    <p class="lead mt-4">
+        <strong>Class.App</strong> — це інтуїтивно зрозумілий вебзастосунок, створений для ефективного управління навчальним процесом.
+        Учні можуть переглядати домашні завдання, відправляти роботи, переглядати оцінки, а вчителі — створювати завдання, оцінювати їх та керувати класами.
+    </p>
+
+    <p>
+        Платформа розроблена з урахуванням зручності для адміністрації школи, вчителів та учнів.
+        Class.App допомагає зменшити паперову бюрократію та зробити навчання цифровим, прозорим та зручним.
+    </p>
 </div>

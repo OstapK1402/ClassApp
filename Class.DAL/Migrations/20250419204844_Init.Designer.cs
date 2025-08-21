@@ -12,8 +12,8 @@ using School.DAL.Context;
 namespace School.DAL.Migrations
 {
     [DbContext(typeof(SchoolDbContext))]
-    [Migration("20250404201710_Update2")]
-    partial class Update2
+    [Migration("20250419204844_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -210,7 +210,6 @@ namespace School.DAL.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Comment")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 

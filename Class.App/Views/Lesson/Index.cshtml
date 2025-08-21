@@ -34,7 +34,7 @@
                     <td>@lesson.Class.Name</td>
                     <td>@lesson.Subject.Name</td>
                     <td>
-                        @if (User.Identity.IsAuthenticated && User.IsInRole("Teacher"))
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
                         {
                             <a asp-action="Edit" asp-route-classId="@lesson.ClassId" asp-route-subjectId="@lesson.SubjectId" class="btn btn-sm btn-primary">Edit</a>
                         }

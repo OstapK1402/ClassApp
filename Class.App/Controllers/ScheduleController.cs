@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using School.App.Models;
 using School.BLL.DTO;
 using School.BLL.Interfaces;
+using School.DAL.Context;
 
 namespace School.App.Controllers
 {
@@ -25,6 +27,7 @@ namespace School.App.Controllers
             return View();
         }
 
+        [Authorize(Roles = UserRole.ADMIN)]
         public async Task<ActionResult> Create(string className, CancellationToken token)
         {
             var classe = await _classService.GetByName(className, token);
@@ -39,6 +42,7 @@ namespace School.App.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = UserRole.ADMIN)]
         public async Task<ActionResult> Create(ScheduleDTO model, CancellationToken token)
         {
             if (!ModelState.IsValid)

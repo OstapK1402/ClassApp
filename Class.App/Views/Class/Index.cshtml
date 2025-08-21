@@ -29,7 +29,7 @@
                                        type="button" class="btn btn-sm btn-outline-secondary">Detail</a>
                                     <a asp-controller="Schedule" asp-action="ClassSchedule" asp-route-classId="@classe.Id"
                                        type="button" class="btn btn-sm btn-outline-secondary">Schedule</a>
-                                    @if (User.Identity.IsAuthenticated && User.IsInRole("Teacher"))
+                                    @if (User.Identity.IsAuthenticated && (User.IsInRole("Teacher") || User.IsInRole("Administrator")))
                                     {
                                         <a asp-controller="Class" asp-action="Edit" asp-route-classId="@classe.Id"
                                            type="button" class="btn btn-sm btn-outline-secondary">Edit</a>
@@ -42,7 +42,7 @@
                     </div>
                 </div>
             }
-            @if (User.Identity.IsAuthenticated && User.IsInRole("Teacher"))
+            @if (User.Identity.IsAuthenticated && (User.IsInRole("Teacher") || User.IsInRole("Administrator")))
             {
                 <div class="col">
                     <div class="card shadow-sm">

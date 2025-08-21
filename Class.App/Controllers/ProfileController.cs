@@ -25,7 +25,7 @@ namespace School.App.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
 
-            if (await _userManager.IsInRoleAsync(user, UserRole.TEACHER))
+            if (await _userManager.IsInRoleAsync(user, UserRole.TEACHER) || await _userManager.IsInRoleAsync(user, UserRole.ADMIN))
             {
                 return RedirectToAction("TeacherProfile", "Profile");
             }
@@ -37,7 +37,7 @@ namespace School.App.Controllers
             return RedirectToAction("Logout", "Acсount");
         }
 
-        [Authorize(Roles = UserRole.TEACHER)]
+        [Authorize(Roles = UserRole.ADMIN + "," + UserRole.TEACHER)]
         public async Task<IActionResult> TeacherProfile()
         {
             var user = await _userService.GetUserByUser(User);
@@ -46,10 +46,10 @@ namespace School.App.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = UserRole.TEACHER)]
+        [Authorize(Roles = UserRole.ADMIN + "," + UserRole.TEACHER)]
         public async Task<IActionResult> TeacherProfile(int teacherId, UserDTO editTeacher, CancellationToken token)
         {
-            if (!ModelState.IsValid)
+            if (editTeacher.FirstName == null || editTeacher.LastName == null)
             {
                 TempData["Error"] = "Filed to edit profile";
                 return View("TeacherProfile", editTeacher);
@@ -87,7 +87,7 @@ namespace School.App.Controllers
         [Authorize(Roles = UserRole.STUDENT)]
         public async Task<IActionResult> StudentProfile(int studentId, UserDTO editStudent, CancellationToken token)
         {
-            if (!ModelState.IsValid)
+            if (editStudent.FirstName == null || editStudent.LastName == null)
             {
                 TempData["Error"] = "Filed to edit profile";
                 return View("StudentProfile", editStudent);
@@ -137,13 +137,13 @@ namespace School.App.Controllers
                 return View("CreateProfile", profile);
             }
 
-            if (await _userManager.IsInRoleAsync(await _userManager.GetUserAsync(User), UserRole.TEACHER))
+            if (await _userManager.IsInRoleAsync(await _userManager.GetUserAsync(User), UserRole.STUDENT))
             {
-                return RedirectToAction("TeacherProfile", "Profile");
+                return RedirectToAction("StudentProfile", "Profile");
             }
             else
             {
-                return RedirectToAction("StudentProfile", "Profile");
+                return RedirectToAction("TeacherProfile", "Profile");
             }
         }
     }

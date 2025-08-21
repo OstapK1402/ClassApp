@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using School.App.Models;
+using School.DAL.Context;
 using School.DAL.Entities;
 
 namespace School.App.Controllers
@@ -48,6 +50,7 @@ namespace School.App.Controllers
             return View(loginModel);
         }
 
+        [Authorize(Roles = UserRole.ADMIN)]
         public IActionResult Register()
         {
             var response = new RegisterViewModel();
@@ -55,6 +58,7 @@ namespace School.App.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = UserRole.ADMIN)]
         public async Task<IActionResult> Register(RegisterViewModel registerViewModel, CancellationToken token)
         {
             if (!ModelState.IsValid)
@@ -80,21 +84,58 @@ namespace School.App.Controllers
             if (newUserResponse.Succeeded)
             {
                 await _userManager.AddToRoleAsync(newUser, registerViewModel.Role);
+                TempData["Success"] = "User added successfully";
             }
             else
             {
                 TempData["Error"] = newUserResponse.Errors.ToString();
-                return View(registerViewModel);
             }
 
-            return RedirectToAction("Login", "Account");
+            return View(registerViewModel);
         }
 
-        [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login", "Account");
+        }
+
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                TempData["Error"] = "User not found.";
+                return RedirectToAction("Login");
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    TempData["Error"] = error.Description;
+                }
+
+                return View(model);
+            }
+
+            await _signInManager.RefreshSignInAsync(user);
+            TempData["Success"] = "Password changed successfully!";
+            return RedirectToAction("Index", "Profile");
         }
     }
 }

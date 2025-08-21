@@ -40,7 +40,8 @@ namespace School.App.Controllers
 
             if (!user.ClassId.HasValue)
             {
-                TempData["Error"] = "ClassId is required.";
+                TempData["Error"] = "You are not added to any classes yet.";
+                return RedirectToAction("Index", "Home");
             }
 
             var lessons = await _classSubjectService.GetAllByClassId(user.ClassId.Value, token);
@@ -68,7 +69,7 @@ namespace School.App.Controllers
             return View("Detail", viewModel);
         }
 
-        [Authorize(Roles = UserRole.TEACHER)]
+        [Authorize(Roles = UserRole.ADMIN)]
         public async Task<ActionResult> Create(int classId, CancellationToken token)
         {
             var model = new ClassSubjectDTO 
@@ -83,7 +84,7 @@ namespace School.App.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = UserRole.TEACHER)]
+        [Authorize(Roles = UserRole.ADMIN)]
         public async Task<ActionResult> Create(ClassSubjectDTO model, CancellationToken token)
         {
             if (!ModelState.IsValid)
@@ -107,7 +108,7 @@ namespace School.App.Controllers
             return RedirectToAction("Detail", "Class", new {classId = model.ClassId});
         }
 
-        [Authorize(Roles = UserRole.TEACHER)]
+        [Authorize(Roles = UserRole.ADMIN)]
         public async Task<IActionResult> Edit(int classId, int subjectId, CancellationToken token)
         {
             var lesson = await _classSubjectService.GetById(classId, subjectId, token);
@@ -123,7 +124,7 @@ namespace School.App.Controllers
             return View("Edit", lesson);
         }
 
-        [Authorize(Roles = UserRole.TEACHER)]
+        [Authorize(Roles = UserRole.ADMIN)]
         [HttpPost]
         public async Task<IActionResult> Edit(int classId, int subjectId, ClassSubjectDTO lessonEdit, CancellationToken token)
         {
@@ -153,7 +154,7 @@ namespace School.App.Controllers
             }
         }
 
-        [Authorize(Roles = UserRole.TEACHER)]
+        [Authorize(Roles = UserRole.ADMIN)]
         public async Task<IActionResult> Delete(int classId, int subjectId, CancellationToken token)
         {
             var lesson = await _classSubjectService.GetById(classId, subjectId, token);

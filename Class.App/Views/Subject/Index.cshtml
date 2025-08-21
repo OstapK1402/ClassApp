@@ -24,7 +24,7 @@
                             <p class="card-text fw-bold">@subject.Name</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
-                                    @if (User.Identity.IsAuthenticated && User.IsInRole("Teacher"))
+                                    @if (User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
                                     {
                                         <a asp-controller="Subject" asp-action="Edit" asp-route-subjectId="@subject.Id"
                                            type="button" class="btn btn-sm btn-outline-secondary">Edit</a>
@@ -37,7 +37,7 @@
                     </div>
                 </div>
             }
-            @if (User.Identity.IsAuthenticated && User.IsInRole("Teacher"))
+            @if (User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
             {
                 <div class="col">
                     <div class="card shadow-sm">
@@ -54,3 +54,4 @@
             }
         </div>
     </div>
+</div>

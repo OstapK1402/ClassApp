@@ -44,7 +44,7 @@ namespace School.App.Controllers
             return View("Detail", classe);
         }
 
-        [Authorize(Roles = UserRole.TEACHER)]
+        [Authorize(Roles = UserRole.ADMIN + "," + UserRole.TEACHER)]
         public async Task<ActionResult> Create(CancellationToken token)
         {
             var model = new ClassDTO { Teachers = await _userService.GetTechersSelectItem(token) };
@@ -53,7 +53,7 @@ namespace School.App.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = UserRole.TEACHER)]
+        [Authorize(Roles = UserRole.ADMIN + "," + UserRole.TEACHER)]
         public async Task<ActionResult> Create(ClassDTO model, CancellationToken token)
         {
             if (!ModelState.IsValid)
@@ -71,7 +71,7 @@ namespace School.App.Controllers
             return RedirectToAction("Index", "Class");
         }
 
-        [Authorize(Roles = UserRole.TEACHER)]
+        [Authorize(Roles = UserRole.ADMIN + "," + UserRole.TEACHER)]
         public async Task<IActionResult> Edit(int classId, CancellationToken token)
         {
             var classes = await _classService.GetById(classId, token);
@@ -87,7 +87,7 @@ namespace School.App.Controllers
             return View("Edit", classes);
         }
 
-        [Authorize(Roles = UserRole.TEACHER)]
+        [Authorize(Roles = UserRole.ADMIN + "," + UserRole.TEACHER)]
         [HttpPost]
         public async Task<IActionResult> Edit(int classId, ClassDTO classEdit, CancellationToken token)
         {
@@ -117,7 +117,7 @@ namespace School.App.Controllers
         }
 
 
-        [Authorize(Roles = UserRole.TEACHER)]
+        [Authorize(Roles = UserRole.ADMIN + "," + UserRole.TEACHER)]
         public async Task<IActionResult> Delete(int classId, CancellationToken token)
         {
             var classe = await _classService.GetById(classId, token);
@@ -133,7 +133,7 @@ namespace School.App.Controllers
             return RedirectToAction("Index", "Class");
         }
 
-        [Authorize(Roles = UserRole.TEACHER)]
+        [Authorize(Roles = UserRole.ADMIN + "," + UserRole.TEACHER)]
         public async Task<IActionResult> AddStudent(int classId, CancellationToken token)
         {
             var classe = await _classService.GetById(classId, token);
@@ -153,7 +153,7 @@ namespace School.App.Controllers
             return View("AddStudent", model);
         }
 
-        [Authorize(Roles = UserRole.TEACHER)]
+        [Authorize(Roles = UserRole.ADMIN + "," + UserRole.TEACHER)]
         [HttpPost]
         public async Task<IActionResult> AddStudent(AddStudentViewModel model, CancellationToken token)
         {
@@ -191,7 +191,7 @@ namespace School.App.Controllers
             return RedirectToAction("Detail", new { classId = classe.Id });
         }
 
-        [Authorize(Roles = UserRole.TEACHER)]
+        [Authorize(Roles = UserRole.ADMIN + "," + UserRole.TEACHER)]
         public async Task<IActionResult> RemoveStudent(int classId, int studentId, CancellationToken token)
         {
             if (!await _classService.RemoveStudentFromClass(classId, studentId, token))
@@ -201,6 +201,22 @@ namespace School.App.Controllers
             }
 
             return RedirectToAction("Detail", new { classId = classId });
+        }
+
+        [Authorize(Roles = UserRole.STUDENT)]
+        public async Task<IActionResult> IndexForUser(CancellationToken token)
+        {
+            var user = await _userService.GetUserByUser(User);
+
+            if (!user.ClassId.HasValue)
+            {
+                TempData["Error"] = "You are not added to any classes yet.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            var classe = await _classService.GetById(user.ClassId.Value ,token);
+
+            return View("Index", new List<ClassDTO> { classe });
         }
     }
 }
